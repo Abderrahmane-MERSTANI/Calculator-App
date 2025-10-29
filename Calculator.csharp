@@ -1,0 +1,81 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        string input = "";
+        double result = 0;
+        double current = 0;
+        char? op = null;
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("Calculatrice Simple (C#)");
+            Console.WriteLine("-----------------------");
+            Console.WriteLine($"Résultat: {result}");
+            Console.WriteLine($"Opérateur en cours: {op}");
+            Console.Write("Entrez un nombre ou opérateur (+ - * / = C pour tout effacer, Q pour quitter): ");
+            input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input)) continue;
+            if (input.ToUpper() == "Q") break;
+            if (input.ToUpper() == "C")
+            {
+                result = 0;
+                current = 0;
+                op = null;
+                continue;
+            }
+
+            if (input == "+" || input == "-" || input == "*" || input == "/")
+            {
+                if (op != null)
+                {
+                    result = Calculate(result, current, op.Value);
+                }
+                else
+                {
+                    result = current;
+                }
+                op = input[0];
+                current = 0;
+                continue;
+            }
+
+            if (input == "=")
+            {
+                if (op != null)
+                {
+                    result = Calculate(result, current, op.Value);
+                    op = null;
+                    current = 0;
+                }
+                continue;
+            }
+
+            if (double.TryParse(input, out double number))
+            {
+                current = number;
+            }
+            else
+            {
+                Console.WriteLine("Entrée invalide ! Appuyez sur une touche pour continuer.");
+                Console.ReadKey();
+            }
+        }
+    }
+
+    static double Calculate(double a, double b, char op)
+    {
+        return op switch
+        {
+            '+' => a + b,
+            '-' => a - b,
+            '*' => a * b,
+            '/' => b == 0 ? double.NaN : a / b,
+            _ => b
+        };
+    }
+}
